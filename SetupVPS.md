@@ -73,7 +73,7 @@ Note: Order of these steps do not matter, except when it is logical.
 
 ## Step 3: VPS Hardening, Network and Firewall policy
 
-1.**UFW (Uncomplicated Firewall)** – Install & configure/ It is a wrapper for iptables. Use these default ports, --> 80-http, 443-https, 22-ssh. The rules are automatically added for both IPv4 and IPv6 (shown as `(v6)` in the status output).
+1. **UFW (Uncomplicated Firewall)** – Install & configure/ It is a wrapper for iptables. Use these default ports, --> 80-http, 443-https, 22-ssh. The rules are automatically added for both IPv4 and IPv6 (shown as `(v6)` in the status output).
 ```bash
 admin1@vmd200007:~$ sudo apt install ufw
 admin1@vmd200007:~$ sudo ufw status
