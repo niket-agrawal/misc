@@ -8,8 +8,8 @@ Note: Order of these steps do not matter, except when it is logical.
 
 ## Step 1: Create and adding a Non-Root User with Sudo Access, (i.e. by adding to sudo group)
 
-1. **There can be two ways to create a new user**, `adduser` or `useradd`.
-   Use `adduser` when you want to add as admin, system prompts for additional user information
+**There can be two ways to create a new user**, `adduser` or `useradd`.
+      Use `adduser` when you want to add as admin, system prompts for additional user information
    But, use `useradd` when you want to add as users, with custom home directory and other group options
    ```bash
    root@vmd200007:~# adduser admin1   # Using adduser (recommended for interactive setup)
@@ -20,7 +20,7 @@ Note: Order of these steps do not matter, except when it is logical.
    root@vmd200007:~# groups admin1     # to see groups for this user
    ```
    
-   Now, switch to the new user to configure SSH, optional but recommended step. You can either log out or login again using password set earlier, or use `su` command. Before this step, generate SSH keys on your local machine (if you haven't already). On windows, go to `C:\Users\niket\.ssh` directory, and use `ssh-keygen -t ed25519 -C "email@example.com"`. It should give you both public and private keys on your PC.
+**Now, switch to the new user to configure SSH**, optional but recommended step. You can either log out or login again using password set earlier, or use `su` command. Before this step, generate SSH keys on your local machine (if you haven't already). On windows, go to `C:\Users\niket\.ssh` directory, and use `ssh-keygen -t ed25519 -C "email@example.com"`. It should give you both public and private keys on your PC.
    To generate keys, you can also use another algorithm,
      ```bash
    ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -C "your_email@example.com"
@@ -38,3 +38,47 @@ Note: Order of these steps do not matter, except when it is logical.
    ```
 
 ---
+
+## Step 2: Set Timezone, Install Essential Utilities
+
+   Set the **timezone**
+   ```bash
+   admin1@vmd200007:~$ timedatectl                                # see current time
+   admin1@vmd200007:~$ timedatectl list-timezones | grep Kolkata  # list available timezones, and select desired
+   admin1@vmd200007:~$ sudo timedatectl set-timezone Asia/Kolkata # set the timezone  
+   admin1@vmd200007:~$ timedatectl                                # see verify
+   ```
+   
+   And then, **install essential utilities**
+   ```bash
+   admin1@vmd200007:~$ sudo apt install htop vim git zip unzip gnupg2 -qq
+   # htop for harware monitoring
+   # vim for editing
+   # git for version control
+   # zip unzip for common functions
+   # gnupg2 for gpg keys verification and creation
+   admin1@vmd200007:~$ htop --version         # verify installations
+   admin1@vmd200007:~$ vim --version          # verify installations
+   admin1@vmd200007:~$ git --version          # verify installations
+   admin1@vmd200007:~$ git --version          # verify installations
+   admin1@vmd200007:~$ git --version          # verify installations
+   
+   admin1@vmd200007:~$ sudo apt install ncdu
+   admin1@vmd200007:~$ bash -c "$(curl -sLo- https://superfile.dev/install.sh)"
+   # ncdu for file explorer
+   # spf for file explorer
+   ```
+
+---
+
+## Step 3: VPS Hardening, Network and Firewall policy
+
+
+
+
+
+
+
+
+
+ 
