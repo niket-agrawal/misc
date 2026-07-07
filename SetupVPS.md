@@ -89,6 +89,7 @@ admin1@vmd200007:~$ sudo ufw allow 2250                       # to allow a port
 admin1@vmd200007:~$ sudo ufw deny xxxx                        # to delete a port
 ```
 
+2. **Fail2Ban** - Installl and configure Fail2Ban for Brute-Force protection
 
 ---
 
