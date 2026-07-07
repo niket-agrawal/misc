@@ -73,6 +73,25 @@ Note: Order of these steps do not matter, except when it is logical.
 
 ## Step 3: VPS Hardening, Network and Firewall policy
 
+1.**UFW (Uncomplicated Firewall)** – Install & configure/ It is a wrapper for iptables. Use these default ports, --> 80-http, 443-https, 22-ssh. The rules are automatically added for both IPv4 and IPv6 (shown as `(v6)` in the status output).
+```bash
+admin1@vmd200007:~$ sudo apt install ufw
+admin1@vmd200007:~$ sudo ufw status
+admin1@vmd200007:~$ sudo ufw default deny incoming            # set a default “deny” incoming policy
+admin1@vmd200007:~$ sudo ufw allow 22/tcp
+admin1@vmd200007:~$ sudo ufw allow 80/tcp
+admin1@vmd200007:~$ sudo ufw allow 443/tcp
+admin1@vmd200007:~$ sudo ufw enable                           # enable the firewall
+admin1@vmd200007:~$ sudo ufw status                           # verify the active rules
+admin1@vmd200007:~$ sudo ufw delete allow xxxx                # to delete a port
+admin1@vmd200007:~$ sudo ufw allow 2250/tcp                   # to allow a tcp port
+admin1@vmd200007:~$ sudo ufw allow 2250                       # to allow a port
+admin1@vmd200007:~$ sudo ufw deny xxxx                        # to delete a port
+```
+
+
+---
+
 
 
 
