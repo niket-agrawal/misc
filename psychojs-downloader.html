@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsychoJS Library Downloader</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- Script made by Duck.ai, Claude Haiku 4.5 -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+            /* background-color: #f8f9fa;  /* Light neutral gray */
+            background-color: #fafaf8;  /* Warm white */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        input::placeholder {
+            color: #999;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            background-color: #2563eb;  /* Simple blue */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            background-color: #1d4ed8;  /* Darker blue on hover */
+            /* transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4); */
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+        }
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        .status.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+            display: none;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .files-list {
+            background-color: #f5f5f5;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+        .files-list h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .files-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .files-list li {
+            padding: 5px 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 PsychoJS Downloader</h1>
+        <p class="subtitle">Download PsychoJS library files as a ZIP archive</p>
+        
+        <div class="form-group">
+            <label for="version">PsychoJS Version:</label>
+            <input 
+                type="text" 
+                id="version" 
+                placeholder="e.g., 2024.1.5" 
+                value="2024.1.5"
+            >
+        </div>
+        
+        <button id="downloadBtn" onclick="downloadFiles()">Download as ZIP</button>
+        
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="files-list">
+            <h3>Files included:</h3>
+            <ul>
+                <li>✓ psychojs-[version].css</li>
+                <li>✓ psychojs-[version].iife.js</li>
+                <li>✓ psychojs-[version].iife.js.map</li>
+                <li>✓ psychojs-[version].js</li>
+                <li>✓ psychojs-[version].js.map</li>
+                <li>✓ psychojs-[version].js.LEGAL.txt</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function downloadFiles() {
+            const version = document.getElementById('version').value.trim();
+            const statusEl = document.getElementById('status');
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            // Validation
+            if (!version) {
+                showStatus('Please enter a version number', 'error');
+                return;
+            }
+            
+            if (!/^\d+\.\d+\.\d+/.test(version)) {
+                showStatus('Invalid version format. Use format like: 2024.1.5', 'error');
+                return;
+            }
+            
+            // Disable button and show progress
+            downloadBtn.disabled = true;
+            progressBar.style.display = 'block';
+            progressFill.style.width = '0%';
+            showStatus('Starting download...', 'info');
+            
+            const files = [
+                `psychojs-${version}.css`,
+                `psychojs-${version}.iife.js`,
+                `psychojs-${version}.iife.js.map`,
+                `psychojs-${version}.js`,
+                `psychojs-${version}.js.map`,
+                `psychojs-${version}.js.LEGAL.txt`
+            ];
+            
+            const baseUrl = 'https://lib.pavlovia.org/';
+            const zip = new JSZip();
+            let completed = 0;
+            let failed = [];
+            
+            try {
+                for (const file of files) {
+                    try {
+                        const url = baseUrl + file;
+                        showStatus(`Downloading: ${file}...`, 'info');
+                        
+                        const response = await fetch(url);
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}`);
+                        }
+                        
+                        const blob = await response.blob();
+                        zip.file(file, blob);
+                        
+                        completed++;
+                        const progress = (completed / files.length) * 100;
+                        progressFill.style.width = progress + '%';
+                    } catch (error) {
+                        console.error(`Failed to download ${file}:`, error);
+                        failed.push(file);
+                    }
+                }
+                
+                if (failed.length === files.length) {
+                    showStatus(`❌ Failed to download any files. Check your internet connection and version number.`, 'error');
+                    downloadBtn.disabled = false;
+                    progressBar.style.display = 'none';
+                    return;
+                }
+                
+                if (failed.length > 0) {
+                    showStatus(`⚠️ Downloaded ${completed}/${files.length} files. Failed: ${failed.join(', ')}`, 'error');
+                } else {
+                    showStatus('✓ All files downloaded successfully! Creating ZIP...', 'info');
+                }
+                
+                // Generate ZIP
+                const blob = await zip.generateAsync({ type: 'blob' });
+                
+                // Download
+                saveAs(blob, `psychojs-${version}.zip`);
+                
+                showStatus(`✓ ZIP file downloaded successfully: psychojs-${version}.zip`, 'success');
+                progressFill.style.width = '100%';
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                downloadBtn.disabled = false;
+                setTimeout(() => {
+                    progressBar.style.display = 'none';
+                }, 2000);
+            }
+        }
+        
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+        
+        // Allow Enter key to trigger download
+        document.getElementById('version').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                downloadFiles();
+            }
+        });
+    </script>
+</body>
+</html>
