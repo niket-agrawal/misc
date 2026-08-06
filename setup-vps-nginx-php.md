@@ -76,6 +76,8 @@ server {
 
 	location / {
 		try_files $uri $uri/ =404;}
+
+	return 301 https://$server_name$request_uri;
 }
 ```
 
@@ -166,7 +168,29 @@ server {
 ```
 > ⚠️ Note: check, certbot might not add automatically if you use wildcard type, it would be more manual.
 
+```
+# added manually for wildcard certificates
+server {
+        # listen [::]:443 ssl ipv6only=on;
+        listen 443 ssl;
 
+        server_name experiment.beehive.quest www.experiment.beehive.quest;
+
+        root /var/www/beehive.quest/users_static/html;
+        index index.html index.htm index.php;
+
+        ssl_certificate /etc/letsencrypt/live/beehive.quest-0001/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/beehive.quest-0001/privkey.pem;
+
+        location / {
+                try_files $uri $uri/ =404;}
+
+        location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;}
+}
+
+```
 
 
 ---
