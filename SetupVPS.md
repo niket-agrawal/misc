@@ -69,7 +69,7 @@ Note: Order of these steps do not matter, except when it is logical.
 
 ## Step 3: VPS Hardening, Network and Firewall policy
 
-1. **UFW (Uncomplicated Firewall)** – Install & configure/ It is a wrapper for iptables. Use these default ports, --> 80-http, 443-https, 22-ssh. The rules are automatically added for both IPv4 and IPv6 (shown as `(v6)` in the status output).
+3.1. **UFW (Uncomplicated Firewall)** – Install & configure: It is a wrapper for iptables. Use these default ports, --> 80-http, 443-https, 22-ssh. The rules are automatically added for both IPv4 and IPv6 (shown as `(v6)` in the status output).
 ```bash
 admin1@vmd200007:~$ sudo apt install ufw
 admin1@vmd200007:~$ sudo ufw status
@@ -85,7 +85,27 @@ admin1@vmd200007:~$ sudo ufw allow 2250                       # to allow a port
 admin1@vmd200007:~$ sudo ufw deny xxxx                        # to delete a port
 ```
 
-2. **Fail2Ban** - Installl and configure Fail2Ban for Brute-Force protection
+3.2. **Fail2Ban** - Install and configure Fail2Ban for Brute-Force protection
+```bash
+admin1@vmd200007:~$ sudo apt-get install fail2ban
+admin1@vmd200007:~$ echo -e "[sshd]\nbackend=systemd\nenabled=true" | sudo tee /etc/fail2ban/jail.local
+      # This creates /etc/fail2ban/jail.local with the following content:
+      [sshd]
+      backend=systemd
+      enabled=true
+admin1@vmd200007:~$ sudo systemctl enable fail2ban            # start on boot
+admin1@vmd200007:~$ sudo systemctl start fail2ban             # start now
+admin1@vmd200007:~$ sudo systemctl status fail2ban            # verify status
+admin1@vmd200007:~$ sudo fail2ban-client status sshd          # check jail
+```
+
+3.3. **Logwatch** - Install and configure logwatch for system logs
+```bash
+admin1@vmd200007:~$ sudo apt-get install logwatch
+admin1@vmd200007:~$ sudo logwatch --range today --detail Low            # todays log, low detail
+admin1@vmd200007:~$ sudo systemctl is-enabled fail2ban                  # verify fail2ban starts on boot
+```
+
 
 ---
 
