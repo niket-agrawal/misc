@@ -1,6 +1,6 @@
 # Setting up and Configuring nginx server, 
 
-This section covers the installation of NGINX, basic service management, and setting up a server block (virtual host) for a website.
+This section covers the installation of NGINX, basic service management, and setting up a server block (virtual host) for a website. Also integrate PHP with server.
 
 ---
 
@@ -48,7 +48,7 @@ admin1@vmd200007:~$ sudo nano /etc/nginx/sites-available/homepage-config-filenam
 # Enable site by creating softlink and reload nginx
 admin1@vmd200007:~$ sudo ln -s /etc/nginx/sites-available/homepage.conf /etc/nginx/sites-enabled/
 admin1@vmd200007:~$ sudo nginx -t
-admin1@vmd200007:~$ sudo systemctl reload nginx
+admin1@vmd200007:~$ sudo systemctl reload nginx			# sudo nginx -t && sudo systemctl reload nginx
 ```
 
 **NGINX Config files and logs**
@@ -62,6 +62,24 @@ admin1@vmd200007:~$ sudo systemctl reload nginx
 | `/etc/nginx/snippets` | This directory contains configuration fragments that can be included elsewhere in the Nginx configuration. Potentially repeatable configuration segments are good candidates for refactoring into snippets. |
 | `/var/log/nginx/access.log` | Every request to your web server is recorded in this log file unless Nginx is configured to do otherwise. |
 | `/var/log/nginx/error.log` | Any Nginx errors will be recorded in this log. |
+
+**Simplest nginx config**
+```
+server {
+	listen 80;
+	listen [::]:80;
+
+	server_name experiment.beehive.quest www.experiment.beehive.quest;
+
+	root /var/www/beehive.quest/html;
+	index index.html index.htm index.php;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
+```
+
 
 ---
 
@@ -77,13 +95,32 @@ admin1@vmd200007:~$ sudo certbot renew --dry-run            # Test renewal witho
 # For, WILDCARD CERTBOT
 # ⚠️ Requires manual DNS TXT record verification
 admin1@vmd200007:~$ sudo certbot certonly --manual --preferred-challenges=dns -d "*.beehive.quest" -d beehive.quest
-
 ```
 
 ---
 
+## PHP 8.4 with Nginx
+```bash
+admin1@vmd200007:~$ sudo apt install php8.4 php8.4-fpm
+admin1@vmd200007:~$ php --version							# verify installation
+admin1@vmd200007:~$ which php
+admin1@vmd200007:~$ ls /var/run/php							# confirm that socket exists
 
+# Create test file,  <?php phpinfo(); ?>
+admin1@vmd200007:~$ nano /var/www/homepage/html/tests/testphp.php
 
+# Restart PHP-FPM and reload Nginx, visit the webpage to see if it works
+admin1@vmd200007:~$ sudo systemctl restart php8.4-fpm
+admin1@vmd200007:~$ sudo nginx -t && sudo systemctl reload nginx
+```
+> ⚠️ Remove testphp.php after testing — never leave phpinfo() exposed in production
+
+**Key paths**
+| Path | Purpose |
+| --- | --- |
+| `/etc/php/8.4/fpm/pool.d/*` | PHP-FPM pool config files |
+| `/var/run/php/*.sock` | PHP-FPM sockets |
+| `/var/log/php8.4-fpm.log` | PHP-FPM logs |
 
 
 
