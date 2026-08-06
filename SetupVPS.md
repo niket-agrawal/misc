@@ -52,22 +52,18 @@ Note: Order of these steps do not matter, except when it is logical.
    And then, **install essential utilities**
    ```bash
    admin1@vmd200007:~$ sudo apt install htop vim git zip unzip gnupg2 -qq
-   # htop for harware monitoring
-   # vim for editing
-   # git for version control
-   # zip unzip for common functions
-   # gnupg2 for gpg keys verification and creation
-   admin1@vmd200007:~$ htop --version         # verify installations
-   admin1@vmd200007:~$ vim --version          # verify installations
-   admin1@vmd200007:~$ git --version          # verify installations
-   admin1@vmd200007:~$ git --version          # verify installations
-   admin1@vmd200007:~$ git --version          # verify installations
-   
-   admin1@vmd200007:~$ sudo apt install ncdu
-   admin1@vmd200007:~$ bash -c "$(curl -sLo- https://superfile.dev/install.sh)"
-   # ncdu for file explorer
-   # spf for file explorer
+
+   # Install file explorers, ncdu, and spf
+   admin1@vmd200007:~$ sudo apt install ncdu                                           # ncdu — disk usage explorer
+   admin1@vmd200007:~$ bash -c "$(curl -sLo- https://superfile.dev/install.sh)"        # superfile (spf) — terminal file manager
    ```
+   | Package | Purpose | Verify installations |
+   | --- | --- | --- |
+   | `htop` | Hardware / process monitoring | `htop --version` |
+   | `vim` | Terminal text editor | `vim --version` |
+   | `git` | Version control | `git --version` |
+   | `zip` / `unzip` | Archive handling | `zip`/ `unzip --version` |
+   | `gnupg2` or `gpg` | GPG key verification & creation | `gpg --version` |
 
 ---
 
