@@ -111,6 +111,11 @@ admin1@vmd200007:~$ nano /var/www/homepage/html/tests/testphp.php
 # Restart PHP-FPM and reload Nginx, visit the webpage to see if it works
 admin1@vmd200007:~$ sudo systemctl restart php8.4-fpm
 admin1@vmd200007:~$ sudo nginx -t && sudo systemctl reload nginx
+
+# sqlite functionality
+admin1@vmd200007:~$ apt install php8.4-sqlite3
+admin1@vmd200007:~$ systemctl restart php8.4-fpm
+admin1@vmd200007:/var/log$ php8.4 -m | grep -i sqlite		# verify
 ```
 > ⚠️ Remove testphp.php after testing — never leave phpinfo() exposed in production
 
