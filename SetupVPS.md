@@ -5,8 +5,6 @@ This guide walks you through the essential steps to secure and configure a new V
 Note: Order of these steps do not matter, except when it is logical.
 
 ---
-<details>
-<summary> 1- Creating a non-root user </summary>
       
 ## Step 1: Create and adding a Non-Root User with Sudo Access, (i.e. by adding to sudo group)
 
@@ -39,13 +37,8 @@ Note: Order of these steps do not matter, except when it is logical.
    # verify key-based login
    $ ssh admin1@178.18.248.217 # Should connect without password prompt. If successful, you're secure.
    ```
-</details>
-
 
 ---
-
-<details>
-<summary> 2- Timezone and utilities </summary>
 
 ## Step 2: Set Timezone, Install Essential Utilities
 
@@ -73,14 +66,9 @@ Note: Order of these steps do not matter, except when it is logical.
    | `zip` / `unzip` | Archive handling | `zip`/ `unzip --version` |
    | `gnupg2` or `gpg` | GPG key verification & creation | `gpg --version` |
 
-</details>
-
 ---
-
-<details>
-<summary> 3- Network security </summary>
       
-## Step 3: VPS Hardening, Network and Firewall policy
+## Step 3: Network security - VPS Hardening and Firewall policy
 
 3.1. **UFW (Uncomplicated Firewall)** – Install & configure: It is a wrapper for iptables. Use these default ports, --> 80-http, 443-https, 22-ssh. The rules are automatically added for both IPv4 and IPv6 (shown as `(v6)` in the status output).
 ```bash
@@ -118,8 +106,6 @@ admin1@vmd200007:~$ sudo apt-get install logwatch
 admin1@vmd200007:~$ sudo logwatch --range today --detail Low            # todays log, low detail
 admin1@vmd200007:~$ sudo systemctl is-enabled fail2ban                  # verify fail2ban starts on boot
 ```
-
-</details>
 
 ---
 
