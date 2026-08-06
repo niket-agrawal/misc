@@ -6,42 +6,46 @@ Note: Order of these steps do not matter, except when it is logical.
 
 ---
 <details>
-      <summary>1- Creating a non-root user</summary>
+<summary> 1- Creating a non-root user </summary>
       
-      ## Step 1: Create and adding a Non-Root User with Sudo Access, (i.e. by adding to sudo group)
+## Step 1: Create and adding a Non-Root User with Sudo Access, (i.e. by adding to sudo group)
 
-      **There can be two ways to create a new user**, `adduser` or `useradd`.
-            Use `adduser` when you want to add as admin, system prompts for additional user information
-         But, use `useradd` when you want to add as users, with custom home directory and other group options
-         ```bash
-         root@vmd200007:~# adduser admin1   # Using adduser (recommended for interactive setup)
-           New password: xxxxxxxx
-         # root@vmd200007:~# useradd -m -s /bin/bash -G sudo admin1 # if you prefer to avoid prompts:
-      
-         root@vmd200007:~# usermod -aG sudo admin1
-         root@vmd200007:~# groups admin1     # to see groups for this user
-         ```
-         
-      **Now, switch to the new user to configure SSH**, optional but recommended step. You can either log out or login again using password set earlier, or use `su` command. Before this step, generate SSH keys on your local machine (if you haven't already). On windows, go to `C:\Users\niket\.ssh` directory, and use `ssh-keygen -t ed25519 -C "email@example.com"`. It should give you both public and private keys on your PC.
-         To generate keys, you can also use another algorithm,
-           ```bash
-         ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -C "your_email@example.com"
-         ```
-         ```bash
-         root@vmd200007:~# su - admin1
-         admin1@vmd200007:~$ pwd
-         admin1@vmd200007:~$ mkdir .ssh
-         admin1@vmd200007:~$ nano .ssh/authorized_keys
-           # Paste your LOCAL/WINDOWS machine's public SSH key (~/.ssh/id_rsa.pub)
-           # Save: Ctrl+X → Y → Enter
-         admin1@vmd200007:~$ chmod 600 .ssh/authorized_keys
-         # verify key-based login
-         $ ssh admin1@178.18.248.217 # Should connect without password prompt. If successful, you're secure.
-         ```
+**There can be two ways to create a new user**, `adduser` or `useradd`.
+      Use `adduser` when you want to add as admin, system prompts for additional user information
+   But, use `useradd` when you want to add as users, with custom home directory and other group options
+   
+   ```bash
+   root@vmd200007:~# adduser admin1   # Using adduser (recommended for interactive setup)
+     New password: xxxxxxxx
+   # root@vmd200007:~# useradd -m -s /bin/bash -G sudo admin1 # if you prefer to avoid prompts:
+
+   root@vmd200007:~# usermod -aG sudo admin1
+   root@vmd200007:~# groups admin1     # to see groups for this user
+   ```
+   
+**Now, switch to the new user to configure SSH**, optional but recommended step. You can either log out or login again using password set earlier, or use `su` command. Before this step, generate SSH keys on your local machine (if you haven't already). On windows, go to `C:\Users\niket\.ssh` directory, and use `ssh-keygen -t ed25519 -C "email@example.com"`. It should give you both public and private keys on your PC.
+   To generate keys, you can also use another algorithm,
+     ```bash
+   ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -C "your_email@example.com"
+   ```
+   ```bash
+   root@vmd200007:~# su - admin1
+   admin1@vmd200007:~$ pwd
+   admin1@vmd200007:~$ mkdir .ssh
+   admin1@vmd200007:~$ nano .ssh/authorized_keys
+     # Paste your LOCAL/WINDOWS machine's public SSH key (~/.ssh/id_rsa.pub)
+     # Save: Ctrl+X → Y → Enter
+   admin1@vmd200007:~$ chmod 600 .ssh/authorized_keys
+   # verify key-based login
+   $ ssh admin1@178.18.248.217 # Should connect without password prompt. If successful, you're secure.
+   ```
 </details>
 
 
 ---
+
+<details>
+<summary> 2- Timezone and utilities </summary>
 
 ## Step 2: Set Timezone, Install Essential Utilities
 
@@ -69,8 +73,13 @@ Note: Order of these steps do not matter, except when it is logical.
    | `zip` / `unzip` | Archive handling | `zip`/ `unzip --version` |
    | `gnupg2` or `gpg` | GPG key verification & creation | `gpg --version` |
 
+</details>
+
 ---
 
+<details>
+<summary> 3- Network security </summary>
+      
 ## Step 3: VPS Hardening, Network and Firewall policy
 
 3.1. **UFW (Uncomplicated Firewall)** – Install & configure: It is a wrapper for iptables. Use these default ports, --> 80-http, 443-https, 22-ssh. The rules are automatically added for both IPv4 and IPv6 (shown as `(v6)` in the status output).
@@ -110,6 +119,7 @@ admin1@vmd200007:~$ sudo logwatch --range today --detail Low            # todays
 admin1@vmd200007:~$ sudo systemctl is-enabled fail2ban                  # verify fail2ban starts on boot
 ```
 
+</details>
 
 ---
 
@@ -120,5 +130,3 @@ admin1@vmd200007:~$ sudo systemctl is-enabled fail2ban                  # verify
 
 
 
-
- 
