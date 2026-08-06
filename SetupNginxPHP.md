@@ -75,8 +75,7 @@ server {
 	index index.html index.htm index.php;
 
 	location / {
-		try_files $uri $uri/ =404;
-	}
+		try_files $uri $uri/ =404;}
 }
 ```
 
@@ -122,7 +121,45 @@ admin1@vmd200007:~$ sudo nginx -t && sudo systemctl reload nginx
 | `/var/run/php/*.sock` | PHP-FPM sockets |
 | `/var/log/php8.4-fpm.log` | PHP-FPM logs |
 
+**Secure nginx config, with PHP**
+```
+server {
+    server_name beehive.quest www.beehive.quest;
 
+	root /var/www/beehive.quest/homepage/html;
+    index index.html index.htm index.nginx-debian.html index.php;
+
+ 	# Add security headers here, see last section   
+
+	location / {
+		try_files $uri $uri/ =404;}
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;}
+
+    # SSL Configuration (managed by Certbot) - automatically added
+    listen [::]:443 ssl ipv6only=on;
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/beehive.quest/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/beehive.quest/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+}
+
+# HTTP to HTTPS (also automatically managed by Certbot) - automatically added
+server {
+	if ($host = www.beehive.quest) {
+		return 301 https://$host$request_uri;}
+    if ($host = beehive.quest) {
+		return 301 https://$host$request_uri;}
+    listen 80;
+    listen [::]:80;
+    server_name beehive.quest www.beehive.quest;
+    return 404;
+}
+```
+> ⚠️ Note: check, certbot might not add automatically if you use wildcard type, it would be more manual.
 
 
 
@@ -133,14 +170,28 @@ admin1@vmd200007:~$ sudo nginx -t && sudo systemctl reload nginx
 Use principle of least privilege
 [https://securityheaders.com/?q=https%3A%2F%2Fbeehive.quest%2F&followRedirects=on](https://securityheaders.com/?q=https%3A%2F%2Fbeehive.quest%2F&followRedirects=on)
 
+```
+    # Security Headers
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), accelerometer=(), gyroscope=(), clipboard-read=(), display-capture=(), payment=(), usb=()" always;
+    add_header Strict-Transport-Security "max-age=300" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+	add_header Content-Security-Policy "default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'" always;
+    server_tokens off;
+```
 
+**🛡️ Security Features Explained:**
+| Header | Purpose |
+| --- | --- |
+| Referrer-Policy | Limits referrer information sent to external sites |
+| Permissions-Policy | Disables sensitive device access (camera, mic, geolocation, etc.) |
+| Strict-Transport-Security | Enforces HTTPS (max-age=300s = 5 minutes) |
+| X-Frame-Options | Prevents clickjacking by blocking embedding in frames |
+| X-XSS-Protection | Enables XSS filtering in older browsers |
+| X-Content-Type-Options | Prevents MIME-sniffing attacks |
+| server_tokens off | Hides NGINX version (security through obscurity) |
+| Content-Security-Policy | Restricts sources for scripts, images, styles |
 
-
-
-
-
-
-
-
-
-
+> ⚠️ Note: CSP is set to allow 'unsafe-inline' for scripts and styles — only use in development or if you control all content. For production, prefer nonce or hash-based policies.
